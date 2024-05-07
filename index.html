@@ -19,6 +19,11 @@
     let seconds = 0;
     let timer = setInterval(moveIt, 1000);
 
+    function caughtIt() {
+      score++;
+      printScore();
+    }
+
     function moveIt() {
       seconds++;
 
@@ -30,11 +35,6 @@
         alert("Jouw uiteindelijke score is: " + score);
         location.reload();
       }
-    }
-
-    function caughtIt() {
-      score++;
-      printScore();
     }
 
     function printScore() {
