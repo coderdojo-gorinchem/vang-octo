@@ -52,10 +52,7 @@
       octocat.style.top = Math.random() * 700 + "px";
 
       if (seconds > gameDuration) {
-        octocat.removeEventListener("click", caughtIt);
-        clearInterval(timer);
-        alert("Jouw uiteindelijke score is: " + score);
-        startGame();
+        stopGame();
       }
     }
 
@@ -82,6 +79,13 @@
       resetTimer();
 
       octocat.addEventListener("click", caughtIt);
+    }
+
+    function stopGame() {
+      octocat.removeEventListener("click", caughtIt);
+      clearInterval(timer);
+      alert("Jouw uiteindelijke score is: " + score);
+      startGame();
     }
   </script>
 </html>
