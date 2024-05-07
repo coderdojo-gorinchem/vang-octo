@@ -15,9 +15,11 @@
 
     const scoreText = document.getElementById("scoreText");
 
-    let score = 0;
-    let seconds = 0;
-    let timer = setInterval(moveIt, 1000);
+    let score;
+    let seconds;
+    let timer;
+
+    startGame();
 
     function caughtIt() {
       score++;
@@ -33,12 +35,20 @@
       if (seconds > 30) {
         clearInterval(timer);
         alert("Jouw uiteindelijke score is: " + score);
-        location.reload();
+        startGame();
       }
     }
 
     function printScore() {
       scoreText.innerText = "Score: " + score;
+    }
+
+    function startGame() {
+      score = 0;
+      printScore();
+
+      seconds = 0;
+      timer = setInterval(moveIt, 1000);
     }
   </script>
 </html>
