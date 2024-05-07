@@ -34,6 +34,16 @@
     function caughtIt() {
       score++;
       printScore();
+
+      // Verplaats de Octocat direct zodra hij gevangen wordt. Anders kun je
+      // gedurende de tijd dat hij niet beweegt blijven scoren
+      moveIt();
+
+      // Het aanroepen van `moveIt` zorgt ervoor dat de tijd verder gezet
+      // wordt. Als je de Octocat vangt, dan krijg je de seconde dat hij niet
+      // bewogen heeft terug
+      resetTimer();
+      seconds--;
     }
 
     function moveIt() {
@@ -53,12 +63,23 @@
       scoreText.innerText = "Score: " + score;
     }
 
+    function resetTimer() {
+      // In het geval dat er een timer actief is, dan moet die eerst gestopt
+      // worden aangezien anders de `moveIt` actie te vaak zal worden
+      // aangeroepen
+      if (timer) {
+        clearInterval(timer);
+      }
+
+      timer = setInterval(moveIt, 1000);
+    }
+
     function startGame() {
       score = 0;
       printScore();
 
       seconds = 0;
-      timer = setInterval(moveIt, 1000);
+      resetTimer();
     }
   </script>
 </html>
