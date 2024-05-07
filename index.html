@@ -1,0 +1,25 @@
+<html>
+  <body style="background-color: cyan">
+    <img id="octocat" style="position: absolute; -webkit-transition: all 0.5s; width: 5dvw" src="octocat.png" onmousedown="caughtIt()" />
+    <p id="scoreText">Score: 0</p>
+  </body>
+  <script>
+    var score = 0;
+    var seconds = 0;
+    var timer = setInterval(moveIt, 1000);
+    function moveIt() {
+      seconds++;
+      document.getElementById("octocat").style.left = Math.random() * 900 + "px";
+      document.getElementById("octocat").style.top = Math.random() * 700 + "px";
+      if (seconds > 30) {
+        clearInterval(timer);
+        alert("Jouw uiteindelijke score is: " + score);
+        location.reload();
+      }
+    }
+    function caughtIt() {
+      score++;
+      document.getElementById("scoreText").innerText = "Score: " + score;
+    }
+  </script>
+</html>
