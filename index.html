@@ -25,6 +25,7 @@
 
     const scoreText = document.getElementById("scoreText");
 
+    let gameDuration = 30;
     let score;
     let seconds;
     let timer;
@@ -52,7 +53,7 @@
       octocat.style.left = Math.random() * 900 + "px";
       octocat.style.top = Math.random() * 700 + "px";
 
-      if (seconds > 30) {
+      if (seconds > gameDuration) {
         clearInterval(timer);
         alert("Jouw uiteindelijke score is: " + score);
         startGame();
