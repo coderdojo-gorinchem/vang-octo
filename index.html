@@ -11,6 +11,9 @@
   </body>
 
   <script>
+    const octocat = document.getElementById("octocat");
+    const scoreText = document.getElementById("scoreText");
+
     let score = 0;
     let seconds = 0;
     let timer = setInterval(moveIt, 1000);
@@ -18,8 +21,8 @@
     function moveIt() {
       seconds++;
 
-      document.getElementById("octocat").style.left = Math.random() * 900 + "px";
-      document.getElementById("octocat").style.top = Math.random() * 700 + "px";
+      octocat.style.left = Math.random() * 900 + "px";
+      octocat.style.top = Math.random() * 700 + "px";
 
       if (seconds > 30) {
         clearInterval(timer);
@@ -30,7 +33,7 @@
 
     function caughtIt() {
       score++;
-      document.getElementById("scoreText").innerText = "Score: " + score;
+      scoreText.innerText = "Score: " + score;
     }
   </script>
 </html>
