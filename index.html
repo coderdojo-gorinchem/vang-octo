@@ -4,7 +4,6 @@
       id="octocat"
       style="position: absolute; -webkit-transition: all 0.5s; width: 5dvw"
       src="octocat.png"
-      onmousedown="caughtIt()"
     />
 
     <p id="scoreText">Score: 0</p>
@@ -12,6 +11,8 @@
 
   <script>
     const octocat = document.getElementById("octocat");
+    octocat.addEventListener("click", caughtIt);
+
     const scoreText = document.getElementById("scoreText");
 
     let score = 0;
