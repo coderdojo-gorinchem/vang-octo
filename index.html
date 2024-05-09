@@ -2,8 +2,18 @@
 <html>
   <head>
     <style>
+      :root {
+        --playing-field-border-width: 1px;
+      }
+
       body {
+        align-items: center;
         background-color: cyan;
+        display: grid;
+        grid-template-rows: min-content 1fr;
+        height: 100dvh;
+        justify-items: center;
+        margin: 0;
         user-select: none;
       }
 
@@ -16,13 +26,22 @@
           cursor: grab;
         }
       }
+
+      #playing-field {
+        border: var(--playing-field-border-width) solid black;
+        height: calc(100% - 2 * var(--playing-field-border-width));
+        position: relative;
+        width: calc(100% - 2 * var(--playing-field-border-width));
+      }
     </style>
   </head>
 
   <body>
-    <img id="octocat" src="octocat.png" />
-
     <p id="scoreText">Score: 0</p>
+
+    <div id="playing-field">
+      <img id="octocat" src="octocat.png" />
+    </div>
   </body>
 
   <script>
