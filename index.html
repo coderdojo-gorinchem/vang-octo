@@ -3,6 +3,10 @@
   <head>
     <style>
       :root {
+        --player-height: 7.5dvw;
+        --player-left: 0%;
+        --player-top: 0%;
+        --player-width: 7.5dvw;
         --playing-field-border-width: 1px;
       }
 
@@ -18,9 +22,26 @@
       }
 
       #octocat {
+        /*
+         * De speler op deze manier positioneren is niet helemaal gelijk over
+         * het hele speelveld, aan de randen wordt een klein gebied
+         * "samengevoegd". Zonder de `clamp` kan de speler voor de helft van de
+         * breedte en/of hoogte buiten het speelveld vallen op de grens van het
+         * speeldveld
+         */
+        left: clamp(
+          0%,
+          calc(var(--player-left) - 0.5 * var(--player-width)),
+          100% - var(--player-width)
+        );
         position: absolute;
+        top: clamp(
+          0%,
+          calc(var(--player-top) - 0.5 * var(--player-height)),
+          100% - var(--player-height)
+        );
         transition: all 0.5s;
-        width: 5dvw;
+        width: var(--player-width);
 
         &:hover {
           cursor: grab;
@@ -46,6 +67,7 @@
 
   <script>
     const octocat = document.getElementById("octocat");
+    const playingField = document.getElementById("playing-field");
     const scoreText = document.getElementById("scoreText");
 
     let gameDuration = 30;
@@ -73,8 +95,11 @@
     function moveIt() {
       seconds++;
 
-      octocat.style.left = Math.random() * 900 + "px";
-      octocat.style.top = Math.random() * 700 + "px";
+      playingField.style.setProperty(
+        "--player-left",
+        `${Math.random() * 100}%`,
+      );
+      playingField.style.setProperty("--player-top", `${Math.random() * 100}%`);
 
       if (seconds > gameDuration) {
         stopGame();
