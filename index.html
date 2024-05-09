@@ -58,7 +58,7 @@
   </head>
 
   <body>
-    <p id="scoreText">Score: 0</p>
+    <p>Score: <span id="scoreText">0</span></p>
 
     <div id="playing-field">
       <img id="octocat" src="octocat.png" />
@@ -107,7 +107,7 @@
     }
 
     function printScore() {
-      scoreText.innerText = "Score: " + score;
+      scoreText.innerText = score;
     }
 
     function resetTimer() {
