@@ -21,6 +21,13 @@
         user-select: none;
       }
 
+      #controls {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        padding-block-end: 1rem;
+      }
+
       #octocat {
         /*
          * De speler op deze manier positioneren is niet helemaal gelijk over
@@ -54,11 +61,20 @@
         position: relative;
         width: calc(100% - 2 * var(--playing-field-border-width));
       }
+
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
 
   <body>
-    <p>Score: <span id="scoreText">0</span></p>
+    <div id="controls">
+      <p><span id="scoreHeader">Score</span>: <span id="scoreText">0</span></p>
+
+      <button id="start">Start</button>
+      <button class="hidden" id="stop">Stop</button>
+    </div>
 
     <div id="playing-field">
       <img id="octocat" src="octocat.png" />
@@ -68,14 +84,18 @@
   <script>
     const octocat = document.getElementById("octocat");
     const playingField = document.getElementById("playing-field");
+    const scoreHeader = document.getElementById("scoreHeader");
     const scoreText = document.getElementById("scoreText");
+    const startButton = document.getElementById("start");
+    const stopButton = document.getElementById("stop");
+
+    startButton.addEventListener("click", startGame);
+    stopButton.addEventListener("click", stopGame);
 
     let gameDuration = 30;
     let score;
     let seconds;
     let timer;
-
-    startGame();
 
     function caughtIt() {
       score++;
@@ -122,6 +142,11 @@
     }
 
     function startGame() {
+      scoreHeader.innerText = "Score";
+
+      startButton.classList.add("hidden");
+      stopButton.classList.remove("hidden");
+
       score = 0;
       printScore();
 
@@ -134,8 +159,11 @@
     function stopGame() {
       octocat.removeEventListener("click", caughtIt);
       clearInterval(timer);
-      alert("Jouw uiteindelijke score is: " + score);
-      startGame();
+
+      scoreHeader.innerText = "Uiteindelijke score";
+
+      startButton.classList.remove("hidden");
+      stopButton.classList.add("hidden");
     }
   </script>
 </html>
