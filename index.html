@@ -8,6 +8,7 @@
         --player-top: 50%;
         --player-width: 25dvw;
         --playing-field-border-width: 1px;
+        --playing-field-size: 100%;
 
         &:has(.fleeing) {
           --player-height: 7.5dvw;
@@ -60,11 +61,32 @@
         }
       }
 
+      #options {
+        border: none;
+        padding-block-end: 1rem;
+      }
+
       #playing-field {
         border: var(--playing-field-border-width) solid black;
-        height: calc(100% - 2 * var(--playing-field-border-width));
+        height: calc(
+          var(--playing-field-size) - 2 * var(--playing-field-border-width)
+        );
         position: relative;
-        width: calc(100% - 2 * var(--playing-field-border-width));
+        width: calc(
+          var(--playing-field-size) - 2 * var(--playing-field-border-width)
+        );
+
+        &.very-easy {
+          --playing-field-size: calc(100% / 3);
+        }
+
+        &.easy {
+          --playing-field-size: 50%;
+        }
+
+        &.medium {
+          --playing-field-size: 75%;
+        }
       }
 
       .hidden {
@@ -77,6 +99,16 @@
     <div id="controls">
       <p><span id="scoreHeader">Score</span>: <span id="scoreText">0</span></p>
 
+      <fieldset id="options">
+        <label for="difficulty">Moeilijkheidsgraad:</label>
+        <select id="difficulty">
+          <option value="very-easy">Heel makkelijk</option>
+          <option value="easy">Makkelijk</option>
+          <option value="medium">Normaal</option>
+          <option selected value="hard">Moeilijk</option>
+        </select>
+      </fieldset>
+
       <button id="start">Start</button>
       <button class="hidden" id="stop">Stop</button>
     </div>
@@ -87,13 +119,16 @@
   </body>
 
   <script>
+    const difficulty = document.getElementById("difficulty");
     const octocat = document.getElementById("octocat");
+    const options = document.getElementById("options");
     const playingField = document.getElementById("playing-field");
     const scoreHeader = document.getElementById("scoreHeader");
     const scoreText = document.getElementById("scoreText");
     const startButton = document.getElementById("start");
     const stopButton = document.getElementById("stop");
 
+    difficulty.addEventListener("change", setDifficulty);
     startButton.addEventListener("click", startGame);
     stopButton.addEventListener("click", stopGame);
 
@@ -146,8 +181,17 @@
       timer = setInterval(moveIt, 1000);
     }
 
+    function setDifficulty(event) {
+      difficulty
+        .querySelectorAll("option")
+        .forEach((option) => playingField.classList.remove(option.value));
+      playingField.classList.add(event.target.value);
+    }
+
     function startGame() {
       scoreHeader.innerText = "Score";
+
+      options.disabled = true;
 
       octocat.classList.add("fleeing");
       startButton.classList.add("hidden");
@@ -172,6 +216,8 @@
 
       scoreHeader.innerText = "Uiteindelijke score";
       setPlayerPosition(0.5, 0.5);
+
+      options.disabled = false;
 
       octocat.classList.remove("fleeing");
       startButton.classList.remove("hidden");
