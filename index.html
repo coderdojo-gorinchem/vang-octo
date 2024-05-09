@@ -150,7 +150,11 @@
       score = 0;
       printScore();
 
-      seconds = 0;
+      // De `moveIt` functie laat de tijd vooruit lopen. Aangezien dat niet de
+      // bedoeling is direct aan het begin van een spel begint het spel "terug
+      // in de tijd"
+      seconds = -1;
+      moveIt();
       resetTimer();
 
       octocat.addEventListener("click", caughtIt);
