@@ -4,8 +4,8 @@
     <style>
       :root {
         --player-height: 7.5dvw;
-        --player-left: 0%;
-        --player-top: 0%;
+        --player-left: 50%;
+        --player-top: 50%;
         --player-width: 7.5dvw;
         --playing-field-border-width: 1px;
       }
@@ -113,14 +113,9 @@
     }
 
     function moveIt() {
+      setPlayerPosition(Math.random(), Math.random());
+
       seconds++;
-
-      playingField.style.setProperty(
-        "--player-left",
-        `${Math.random() * 100}%`,
-      );
-      playingField.style.setProperty("--player-top", `${Math.random() * 100}%`);
-
       if (seconds > gameDuration) {
         stopGame();
       }
@@ -128,6 +123,11 @@
 
     function printScore() {
       scoreText.innerText = score;
+    }
+
+    function setPlayerPosition(left, top) {
+      playingField.style.setProperty("--player-left", `${left * 100}%`);
+      playingField.style.setProperty("--player-top", `${top * 100}%`);
     }
 
     function resetTimer() {
@@ -161,6 +161,7 @@
       clearInterval(timer);
 
       scoreHeader.innerText = "Uiteindelijke score";
+      setPlayerPosition(0.5, 0.5);
 
       startButton.classList.remove("hidden");
       stopButton.classList.add("hidden");
