@@ -63,7 +63,12 @@
 
       #options {
         border: none;
+        display: flex;
         padding-block-end: 1rem;
+
+        & > * {
+          padding-inline-end: 1rem;
+        }
       }
 
       #playing-field {
@@ -100,13 +105,20 @@
       <p><span id="scoreHeader">Score</span>: <span id="scoreText">0</span></p>
 
       <fieldset id="options">
-        <label for="difficulty">Moeilijkheidsgraad:</label>
-        <select id="difficulty">
-          <option value="very-easy">Heel makkelijk</option>
-          <option value="easy">Makkelijk</option>
-          <option value="medium">Normaal</option>
-          <option selected value="hard">Moeilijk</option>
-        </select>
+        <div>
+          <label for="difficulty">Moeilijkheidsgraad:</label>
+          <select id="difficulty">
+            <option value="very-easy">Heel makkelijk</option>
+            <option value="easy">Makkelijk</option>
+            <option value="medium">Normaal</option>
+            <option selected value="hard">Moeilijk</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="duration">Spelduur (in seconden)</label>
+          <input id="duration" max="120" min="5" type="number" value="30" />
+        </div>
       </fieldset>
 
       <button id="start">Start</button>
@@ -120,6 +132,7 @@
 
   <script>
     const difficulty = document.getElementById("difficulty");
+    const duration = document.getElementById("duration");
     const octocat = document.getElementById("octocat");
     const options = document.getElementById("options");
     const playingField = document.getElementById("playing-field");
@@ -132,7 +145,7 @@
     startButton.addEventListener("click", startGame);
     stopButton.addEventListener("click", stopGame);
 
-    let gameDuration = 30;
+    let gameDuration;
     let score;
     let seconds;
     let timer;
@@ -192,6 +205,8 @@
       scoreHeader.innerText = "Score";
 
       options.disabled = true;
+
+      gameDuration = parseInt(duration.value);
 
       octocat.classList.add("fleeing");
       startButton.classList.add("hidden");
