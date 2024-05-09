@@ -119,6 +119,11 @@
           <label for="duration">Spelduur (in seconden)</label>
           <input id="duration" max="120" min="5" type="number" value="30" />
         </div>
+
+        <div>
+          <label for="timeout">Wachttijd (in seconden)</label>
+          <input id="timeout" max="10" min="1" type="number" value="1" />
+        </div>
       </fieldset>
 
       <button id="start">Start</button>
@@ -140,6 +145,7 @@
     const scoreText = document.getElementById("scoreText");
     const startButton = document.getElementById("start");
     const stopButton = document.getElementById("stop");
+    const timeout = document.getElementById("timeout");
 
     difficulty.addEventListener("change", setDifficulty);
     startButton.addEventListener("click", startGame);
@@ -149,6 +155,7 @@
     let score;
     let seconds;
     let timer;
+    let waitTimeout;
 
     function caughtIt() {
       score++;
@@ -191,7 +198,7 @@
         clearInterval(timer);
       }
 
-      timer = setInterval(moveIt, 1000);
+      timer = setInterval(moveIt, waitTimeout * 1000);
     }
 
     function setDifficulty(event) {
@@ -207,6 +214,7 @@
       options.disabled = true;
 
       gameDuration = parseInt(duration.value);
+      waitTimeout = parseInt(timeout.value);
 
       octocat.classList.add("fleeing");
       startButton.classList.add("hidden");
