@@ -1,250 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <style>
       :root {
-        --player-height: 25dvw;
         --player-left: 50%;
+        --player-size: 7.5dvw;
         --player-top: 50%;
-        --player-width: 25dvw;
-        --playing-field-border-width: 1px;
-        --playing-field-size: 100%;
-
-        &:has(.fleeing) {
-          --player-height: 7.5dvw;
-          --player-width: 7.5dvw;
-        }
       }
 
       body {
-        align-items: center;
-        background-color: cyan;
-        display: grid;
-        grid-template-rows: min-content 1fr;
         height: 100dvh;
-        justify-items: center;
         margin: 0;
-        user-select: none;
-      }
-
-      #controls {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        padding-block-end: 1rem;
       }
 
       #octocat {
-        /*
-         * De speler op deze manier positioneren is niet helemaal gelijk over
-         * het hele speelveld, aan de randen wordt een klein gebied
-         * "samengevoegd". Zonder de `clamp` kan de speler voor de helft van de
-         * breedte en/of hoogte buiten het speelveld vallen op de grens van het
-         * speeldveld
-         */
-        left: clamp(
-          0%,
-          calc(var(--player-left) - 0.5 * var(--player-width)),
-          100% - var(--player-width)
-        );
+        height: var(--player-size);
+        left: calc(var(--player-left) - 0.5 * var(--player-size));
         position: absolute;
-        top: clamp(
-          0%,
-          calc(var(--player-top) - 0.5 * var(--player-height)),
-          100% - var(--player-height)
-        );
-        transition: all 0.5s;
-        width: var(--player-width);
-
-        &.fleeing:hover {
-          cursor: grab;
-        }
+        top: calc(var(--player-top) - 0.5 * var(--player-size));
+        width: var(--player-size);
       }
 
-      #options {
-        border: none;
-        display: flex;
-        padding-block-end: 1rem;
-
-        & > * {
-          padding-inline-end: 1rem;
-        }
-      }
-
-      #playing-field {
-        border: var(--playing-field-border-width) solid black;
-        height: calc(
-          var(--playing-field-size) - 2 * var(--playing-field-border-width)
-        );
+      #speelveld {
+        background-color: royalblue;
+        height: 100%;
         position: relative;
-        width: calc(
-          var(--playing-field-size) - 2 * var(--playing-field-border-width)
-        );
-
-        &.very-easy {
-          --playing-field-size: calc(100% / 3);
-        }
-
-        &.easy {
-          --playing-field-size: 50%;
-        }
-
-        &.medium {
-          --playing-field-size: 75%;
-        }
-      }
-
-      .hidden {
-        display: none;
       }
     </style>
   </head>
-
   <body>
-    <div id="controls">
-      <p><span id="scoreHeader">Score</span>: <span id="scoreText">0</span></p>
-
-      <fieldset id="options">
-        <div>
-          <label for="difficulty">Moeilijkheidsgraad:</label>
-          <select id="difficulty">
-            <option value="very-easy">Heel makkelijk</option>
-            <option value="easy">Makkelijk</option>
-            <option value="medium">Normaal</option>
-            <option selected value="hard">Moeilijk</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="duration">Spelduur (in seconden)</label>
-          <input id="duration" max="120" min="5" type="number" value="30" />
-        </div>
-
-        <div>
-          <label for="timeout">Wachttijd (in seconden)</label>
-          <input id="timeout" max="10" min="1" type="number" value="1" />
-        </div>
-      </fieldset>
-
-      <button id="start">Start</button>
-      <button class="hidden" id="stop">Stop</button>
+    <div id="speelveld">
+      <img id="octocat" src="octocat.png" alt="Octocat" />
     </div>
 
-    <div id="playing-field">
-      <img id="octocat" src="octocat.png" />
-    </div>
+    <script>
+      const octocat = document.getElementById("octocat");
+
+      function movePlayer() {
+        octocat.style.setProperty("--player-left", `${Math.random() * 100}%`);
+        octocat.style.setProperty("--player-top", `${Math.random() * 100}%`);
+      }
+
+      setInterval(movePlayer, 1000);
+    </script>
   </body>
-
-  <script>
-    const difficulty = document.getElementById("difficulty");
-    const duration = document.getElementById("duration");
-    const octocat = document.getElementById("octocat");
-    const options = document.getElementById("options");
-    const playingField = document.getElementById("playing-field");
-    const scoreHeader = document.getElementById("scoreHeader");
-    const scoreText = document.getElementById("scoreText");
-    const startButton = document.getElementById("start");
-    const stopButton = document.getElementById("stop");
-    const timeout = document.getElementById("timeout");
-
-    difficulty.addEventListener("change", setDifficulty);
-    startButton.addEventListener("click", startGame);
-    stopButton.addEventListener("click", stopGame);
-
-    let gameDuration;
-    let score;
-    let seconds;
-    let timer;
-    let waitTimeout;
-
-    function caughtIt() {
-      score++;
-      printScore();
-
-      // Verplaats de Octocat direct zodra hij gevangen wordt. Anders kun je
-      // gedurende de tijd dat hij niet beweegt blijven scoren
-      moveIt();
-
-      // Het aanroepen van `moveIt` zorgt ervoor dat de tijd verder gezet
-      // wordt. Als je de Octocat vangt, dan krijg je de seconde dat hij niet
-      // bewogen heeft terug
-      resetTimer();
-      seconds--;
-    }
-
-    function moveIt() {
-      setPlayerPosition(Math.random(), Math.random());
-
-      seconds++;
-      if (seconds > gameDuration) {
-        stopGame();
-      }
-    }
-
-    function printScore() {
-      scoreText.innerText = score;
-    }
-
-    function setPlayerPosition(left, top) {
-      playingField.style.setProperty("--player-left", `${left * 100}%`);
-      playingField.style.setProperty("--player-top", `${top * 100}%`);
-    }
-
-    function resetTimer() {
-      // In het geval dat er een timer actief is, dan moet die eerst gestopt
-      // worden aangezien anders de `moveIt` actie te vaak zal worden
-      // aangeroepen
-      if (timer) {
-        clearInterval(timer);
-      }
-
-      timer = setInterval(moveIt, waitTimeout * 1000);
-    }
-
-    function setDifficulty(event) {
-      difficulty
-        .querySelectorAll("option")
-        .forEach((option) => playingField.classList.remove(option.value));
-      playingField.classList.add(event.target.value);
-    }
-
-    function startGame() {
-      scoreHeader.innerText = "Score";
-
-      options.disabled = true;
-
-      gameDuration = parseInt(duration.value);
-      waitTimeout = parseInt(timeout.value);
-
-      octocat.classList.add("fleeing");
-      startButton.classList.add("hidden");
-      stopButton.classList.remove("hidden");
-
-      score = 0;
-      printScore();
-
-      // De `moveIt` functie laat de tijd vooruit lopen. Aangezien dat niet de
-      // bedoeling is direct aan het begin van een spel begint het spel "terug
-      // in de tijd"
-      seconds = -1;
-      moveIt();
-      resetTimer();
-
-      octocat.addEventListener("click", caughtIt);
-    }
-
-    function stopGame() {
-      octocat.removeEventListener("click", caughtIt);
-      clearInterval(timer);
-
-      scoreHeader.innerText = "Uiteindelijke score";
-      setPlayerPosition(0.5, 0.5);
-
-      options.disabled = false;
-
-      octocat.classList.remove("fleeing");
-      startButton.classList.remove("hidden");
-      stopButton.classList.add("hidden");
-    }
-  </script>
 </html>
